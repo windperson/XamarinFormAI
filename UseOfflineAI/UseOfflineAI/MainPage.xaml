@@ -2,14 +2,25 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:UseOfflineAI"
-             x:Class="UseOfflineAI.MainPage">
+             x:Class="UseOfflineAI.MainPage"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core" 
+             ios:Page.UseSafeArea="true" >
 
-    <StackLayout>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
         <!-- Place new controls here -->
-        <Label Text="Click to take picture" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" x:Name="LabelStatus" />
-        <Button Text="Take a Picture" Clicked="Button_Clicked" />
-    </StackLayout>
+        <ScrollView>
+            <Image x:Name="PhotoImage" VerticalOptions="FillAndExpand"></Image>
+        </ScrollView>
+        <StackLayout Grid.Row="1">
+            <Button x:Name="TakePhotoButton" Text="Take a Picture" Clicked="Button_Clicked" />
+            <Label Text="Click button to take picture" 
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" x:Name="LabelStatus" />
+        </StackLayout>
+    </Grid>
 
 </ContentPage>

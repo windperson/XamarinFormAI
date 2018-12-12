@@ -46,14 +46,13 @@ namespace UseOfflineAI
                     await DisplayAlert("Photo not took", "User cancelled", "OK");
                     return;
                 }
-
+                TakePhotoButton.IsEnabled = false;
                 LabelStatus.Text = "loading AI...";
 
-                string result = await GetOfflineAiDecision(file);
-
-                await DisplayAlert("Offline AI", result, "OK");
-
-                LabelStatus.Text = "Click to take picture";
+                var result = await LoadImageAndAiIdentify(file);
+                
+                LabelStatus.Text = $"Result:\n{result}";
+                TakePhotoButton.IsEnabled = true;
             }
             else
             {
@@ -61,6 +60,23 @@ namespace UseOfflineAI
                 //On iOS you may want to send your user to the settings screen.
                 //CrossPermissions.Current.OpenAppSettings();
             }
+        }
+
+        private async Task<string> LoadImageAndAiIdentify(MediaFile file)
+        {
+            PhotoImage.Source = ImageSource.FromStream(file.GetStream);
+            var result = string.Empty;
+            try
+            {
+                result = await GetOfflineAiDecision(file);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("AI error", ex.Message, "Abort");
+            }
+
+            await DisplayAlert("Offline AI", result, "OK");
+            return result;
         }
 
         private async Task<string> GetOfflineAiDecision(MediaFile file)
