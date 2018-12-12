@@ -4,21 +4,16 @@ using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Xam.Plugins.OnDeviceCustomVision;
 using Xamarin.Forms;
 
-namespace CallOnlineAI
+namespace UseOfflineAI
 {
     public partial class MainPage : ContentPage
     {
-        private static string AiWebApiUrl = @"Use your Customvision.Ai prediction url";
-        private static System.Net.Http.Headers.MediaTypeHeaderValue AiUrlContenttype = new System.Net.Http.Headers.MediaTypeHeaderValue(@"application/octet-stream");
-        private static string AiWebApiPredictionKey = @"Use your Customvision.Ai prediction key";
-
         public MainPage()
         {
             InitializeComponent();
@@ -42,21 +37,23 @@ namespace CallOnlineAI
 
                 var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
                 {
-                    Directory = "Sample",
+                    Directory = "my_images",
                     Name = "test.jpg"
                 });
 
                 if (file == null)
                 {
-                    await DisplayAlert("Photo not took","User cancelled", "OK");
+                    await DisplayAlert("Photo not took", "User cancelled", "OK");
                     return;
                 }
-                LabelStatus.Text = "Call online AI WebAPI....";
-                string result = await GetWebAiDecision(file);
 
-                await DisplayAlert("Ai Web API", result, "OK");
+                LabelStatus.Text = "loading AI...";
+
+                string result = await GetOfflineAiDecision(file);
+
+                await DisplayAlert("Offline AI", result, "OK");
+
                 LabelStatus.Text = "Click to take picture";
-
             }
             else
             {
@@ -66,17 +63,23 @@ namespace CallOnlineAI
             }
         }
 
-        private async Task<string> GetWebAiDecision(MediaFile file)
+        private async Task<string> GetOfflineAiDecision(MediaFile file)
         {
-            var fileContent = new StreamContent(file.GetStream());
-            fileContent.Headers.ContentType = AiUrlContenttype;
-            fileContent.Headers.Add("Prediction-Key", AiWebApiPredictionKey);
+            var model = CrossImageClassifier.Current;
+            if (model == null)
+            {
+                await DisplayAlert("error", "Cannot load offline model", "abort");
+                return "Cannot load offline model";
+            }
 
-            var httpClient = new HttpClient();
-            var response = await httpClient.PostAsync(AiWebApiUrl, fileContent);
+            var tags = await model.ClassifyImage(file.GetStream());
 
-            return await response.Content.ReadAsStringAsync();
-                       
-        }      
+            var result = new List<string>();
+            foreach (var tag in tags.OrderByDescending(t => t.Probability))
+            {
+                result.Add($"{tag.Tag}: {tag.Probability}");
+            }
+            return result.Aggregate((s1, s2) => $"{s1},\n{s2}");
+        }
     }
 }
