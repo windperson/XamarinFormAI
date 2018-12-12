@@ -6,10 +6,10 @@
 
     <StackLayout>
         <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
+        <Label Text="Click to take picture" 
            HorizontalOptions="Center"
            VerticalOptions="CenterAndExpand" />
-        <Button Text="Select Picture" Clicked="Button_Clicked" />
+        <Button Text="Take Picture" Clicked="Button_Clicked" />
     </StackLayout>
 
 </ContentPage>
