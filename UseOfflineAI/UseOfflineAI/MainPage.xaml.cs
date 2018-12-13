@@ -4,7 +4,9 @@ using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Xam.Plugins.OnDeviceCustomVision;
@@ -17,6 +19,16 @@ namespace UseOfflineAI
         public MainPage()
         {
             InitializeComponent();
+        }
+
+        public ImageSource DisplaySource
+        {
+            get => PhotoImage.Source;
+            set
+            {
+                PhotoImage.Source = value;
+                OnPropertyChanged(nameof(PhotoImage));
+            }
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -35,7 +47,7 @@ namespace UseOfflineAI
             {
                 //Take a photo
 
-                var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
+                var file = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions
                 {
                     Directory = "my_images",
                     Name = "test.jpg"
@@ -47,10 +59,11 @@ namespace UseOfflineAI
                     return;
                 }
                 TakePhotoButton.IsEnabled = false;
+                DisplaySource = ImageSource.FromStream(file.GetStream);
                 LabelStatus.Text = "loading AI...";
 
-                var result = await LoadImageAndAiIdentify(file);
-                
+                var result = await AiIdentify(file);
+
                 LabelStatus.Text = $"Result:\n{result}";
                 TakePhotoButton.IsEnabled = true;
             }
@@ -62,20 +75,19 @@ namespace UseOfflineAI
             }
         }
 
-        private async Task<string> LoadImageAndAiIdentify(MediaFile file)
+        private async Task<string> AiIdentify(MediaFile file)
         {
-            PhotoImage.Source = ImageSource.FromStream(file.GetStream);
             var result = string.Empty;
             try
             {
-                result = await GetOfflineAiDecision(file);
+                result = await Task.Run(async () => await GetOfflineAiDecision(file));
             }
             catch (Exception ex)
             {
                 await DisplayAlert("AI error", ex.Message, "Abort");
             }
 
-            await DisplayAlert("Offline AI", result, "OK");
+            await DisplayAlert("Offline AI got", result, "OK");
             return result;
         }
 
@@ -84,8 +96,7 @@ namespace UseOfflineAI
             var model = CrossImageClassifier.Current;
             if (model == null)
             {
-                await DisplayAlert("error", "Cannot load offline model", "abort");
-                return "Cannot load offline model";
+                throw new Exception("Can not load offline AI model");
             }
 
             var tags = await model.ClassifyImage(file.GetStream());
