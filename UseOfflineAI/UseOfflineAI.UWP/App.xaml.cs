@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using UseOfflineAI.UWP.DependencyServices;
 
 namespace UseOfflineAI.UWP
 {
@@ -53,6 +54,9 @@ namespace UseOfflineAI.UWP
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
                 Xamarin.Forms.Forms.Init(e);
+
+                // Note: be sure to register Dependency Service
+                Xamarin.Forms.DependencyService.Register<Uwp1809CatDogRecognizer>();
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {

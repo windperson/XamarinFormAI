@@ -12,7 +12,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Xam.Plugins.OnDeviceCustomVision;
 
 namespace UseOfflineAI.UWP
 {
@@ -23,13 +22,6 @@ namespace UseOfflineAI.UWP
             this.InitializeComponent();
 
             LoadApplication(new UseOfflineAI.App());
-        }
-
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
-        {
-            await WindowsImageClassifier.Init("my_cat_dog", new[] { "cat", "dog", "Negative" });
-
-            base.OnNavigatedTo(e);
         }
     }
 }
