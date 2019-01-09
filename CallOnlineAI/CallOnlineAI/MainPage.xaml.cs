@@ -15,9 +15,9 @@ namespace CallOnlineAI
 {
     public partial class MainPage : ContentPage
     {
-        private static string AiWebApiUrl = @"Use your Customvision.Ai prediction url";
+        private static string AiWebApiUrl = @"https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/1650fdcb-a666-47c1-9f4d-4537ed96a165/image";
         private static System.Net.Http.Headers.MediaTypeHeaderValue AiUrlContenttype = new System.Net.Http.Headers.MediaTypeHeaderValue(@"application/octet-stream");
-        private static string AiWebApiPredictionKey = @"Use your Customvision.Ai prediction key";
+        private static string AiWebApiPredictionKey = @"d6181300f9054ff989e1baf3d9352418";
 
         public MainPage()
         {
