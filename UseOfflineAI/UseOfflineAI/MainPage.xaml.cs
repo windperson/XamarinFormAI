@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using UseOfflineAI.DependencyServices;
 using Xamarin.Forms;
 
 namespace UseOfflineAI
@@ -92,21 +93,22 @@ namespace UseOfflineAI
 
         private async Task<string> GetOfflineAiDecision(MediaFile file)
         {
-            throw new NotImplementedException();
-            //var model = CrossImageClassifier.Current;
-            //if (model == null)
-            //{
-            //    throw new Exception("Can not load offline AI model");
-            //}
 
-            //var tags = await model.ClassifyImage(file.GetStream());
 
-            //var result = new List<string>();
-            //foreach (var tag in tags.OrderByDescending(t => t.Probability))
-            //{
-            //    result.Add($"{tag.Tag}: {tag.Probability}");
-            //}
-            //return result.Aggregate((s1, s2) => $"{s1},\n{s2}");
+            var recognizer = DependencyService.Get<IRecognize>();
+            if (recognizer == null)
+            {
+                throw new Exception("No Implement Vision AI service");
+            }
+
+            var tags = await recognizer.Recognize(file.GetStream());
+            
+            var result = new List<string>();
+            foreach (var tag in tags.OrderByDescending(t => t.Probability))
+            {
+                result.Add($"{tag.Tag}: {tag.Probability}");
+            }
+            return result.Aggregate((s1, s2) => $"{s1},\n{s2}");
         }
     }
 }
