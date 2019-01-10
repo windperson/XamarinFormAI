@@ -7,7 +7,7 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using Plugin.CurrentActivity;
-using Xam.Plugins.OnDeviceCustomVision;
+
 
 namespace UseOfflineAI.Droid
 {
@@ -16,8 +16,6 @@ namespace UseOfflineAI.Droid
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            AndroidImageClassifier.Init("model.pb", "labels.txt", ModelType.General);
-
             CrossCurrentActivity.Current.Init(this, savedInstanceState);
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
