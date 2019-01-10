@@ -16,7 +16,7 @@ namespace UseOfflineAI.UWP
     public sealed class my_cat_dogOutput
     {
         public TensorString classLabel; // shape(-1,1)
-        public IList<Dictionary<string,float>> loss;
+        public IList<IDictionary<string, float>> loss;
     }
     
     public sealed class my_cat_dogModel
@@ -38,7 +38,7 @@ namespace UseOfflineAI.UWP
             var result = await session.EvaluateAsync(binding, "0");
             var output = new my_cat_dogOutput();
             output.classLabel = result.Outputs["classLabel"] as TensorString;
-            output.loss = result.Outputs["loss"] as IList<Dictionary<string,float>>;
+            output.loss = result.Outputs["loss"] as IList<IDictionary<string,float>>;
             return output;
         }
     }
