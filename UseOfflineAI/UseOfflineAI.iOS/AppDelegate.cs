@@ -4,7 +4,6 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
-using Xam.Plugins.OnDeviceCustomVision;
 
 namespace UseOfflineAI.iOS
 {
@@ -23,7 +22,6 @@ namespace UseOfflineAI.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            iOSImageClassifier.Init("my_cat_dog");
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
 
