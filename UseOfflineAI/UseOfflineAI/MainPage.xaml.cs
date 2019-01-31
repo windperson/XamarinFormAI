@@ -47,11 +47,20 @@ namespace UseOfflineAI
             {
                 //Take a photo
 
-                var file = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions
+                MediaFile file;
+                try
                 {
-                    Directory = "my_images",
-                    Name = "test.jpg"
-                });
+                    file = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions
+                    {
+                        Directory = "my_images",
+                        Name = "test.jpg"
+                    });
+                }
+                catch (NotSupportedException)
+                {
+                    await DisplayAlert("Photo not took", "This device has no camera", "OK");
+                    return;
+                }
 
                 if (file == null)
                 {
