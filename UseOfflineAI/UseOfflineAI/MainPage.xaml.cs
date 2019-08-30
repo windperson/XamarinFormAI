@@ -115,7 +115,7 @@ namespace UseOfflineAI
             var result = new List<string>();
             foreach (var tag in tags.OrderByDescending(t => t.Probability))
             {
-                result.Add($"{tag.Tag}: {tag.Probability}");
+                result.Add($"{tag.Tag}: {tag.Probability:P2}");
             }
             return result.Aggregate((s1, s2) => $"{s1},\n{s2}");
         }
